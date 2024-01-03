@@ -10,4 +10,4 @@ import { GlobalModule } from './global/global.module';
   providers: [],
   exports: [],
 })
-export class AppModule {}
+export class AppModule  {}
