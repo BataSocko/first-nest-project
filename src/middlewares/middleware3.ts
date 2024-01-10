@@ -1,10 +1,21 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { NextFunction } from 'express';
+import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
+import { NextFunction, Request, Response } from 'express';
 
 @Injectable()
-export class Middleware3 implements NestMiddleware {
+export class LoggingMiddleware implements NestMiddleware {
+  constructor(private logger: Logger) {}
   use(req: Request, res: Response, next: NextFunction) {
-    console.log('Reached middleware number 3....');
+    const { method, path: url } = req;
+    const reqTime = new Date().getTime();
+    res.on('finish', () => {
+      const { statusCode } = res;
+      const resTime = new Date().getTime();
+      if (statusCode === 200 || statusCode === 201) {
+        this.logger.log(
+          `${method} ${url} ${statusCode} - ${resTime - reqTime} ms`,
+        );
+      }
+    });
     next();
   }
 }
